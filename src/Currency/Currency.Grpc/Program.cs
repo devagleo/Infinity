@@ -3,7 +3,7 @@ using Currency.Application;
 using Currency.Grpc.Interceptors;
 using Currency.Grpc.Services;
 
-namespace Currency.Grpcs
+namespace Currency.Grpc
 {
     public class Program
     {

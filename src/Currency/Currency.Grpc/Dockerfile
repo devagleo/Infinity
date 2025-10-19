@@ -8,23 +8,23 @@ WORKDIR /app
 FROM mcr.microsoft.com/dotnet/sdk:8.0-alpie AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["Currency/Currency.Grpcs/Currency.Grpcs.csproj", "Currency/Currency.Grpcs/"]
+COPY ["Currency/Currency.Grpc/Currency.Grpc.csproj", "Currency/Currency.Grpc/"]
 COPY ["Currency/Currency.Application/Currency.Application.csproj", "Currency/Currency.Application/"]
 COPY ["Currency/Currency.Domain/Currency.Domain.csproj", "Currency/Currency.Domain/"]
 COPY ["src/Shared/Shared.csproj", "src/Shared/"]
 COPY ["Currency/Currency.Infrastructure/Currency.Infrastructure.csproj", "Currency/Currency.Infrastructure/"]
-RUN dotnet restore "./Currency/Currency.Grpcs/Currency.Grpcs.csproj"
+RUN dotnet restore "./Currency/Currency.Grpc/Currency.Grpc.csproj"
 COPY . .
-WORKDIR "/src/Currency/Currency.Grpcs"
-RUN dotnet build "./Currency.Grpcs.csproj" -c $BUILD_CONFIGURATION -o /app/build
+WORKDIR "/src/Currency/Currency.Grpc"
+RUN dotnet build "./Currency.Grpc.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 # Этот этап используется для публикации проекта службы, который будет скопирован на последний этап
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./Currency.Grpcs.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "./Currency.Grpc.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 # Этот этап используется в рабочей среде или при запуске из VS в обычном режиме (по умолчанию, когда конфигурация отладки не используется)
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "Currency.Grpcs.dll"]
+ENTRYPOINT ["dotnet", "Currency.Grpc.dll"]

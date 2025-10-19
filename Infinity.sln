@@ -27,7 +27,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Currency.Infrastructure", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Currency.Application", "src\Currency\Currency.Application\Currency.Application.csproj", "{8AB4C263-D212-4700-82BE-484772CA56CD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Currency.Grpcs", "src\Currency\Currency.Grpcs\Currency.Grpcs.csproj", "{4F5BFA5C-A414-416C-AF5B-7621970F764E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Currency.Grpc", "src\Currency\Currency.Grpc\Currency.Grpc.csproj", "{4F5BFA5C-A414-416C-AF5B-7621970F764E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Currency.BackgroundWorkerService", "src\Currency\Currency.BackgroundWorkerService\Currency.BackgroundWorkerService.csproj", "{C1666521-36A7-4BFC-A80E-827B92BF3C58}"
 EndProject
