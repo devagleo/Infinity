@@ -31,6 +31,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Currency.Grpcs", "Currency\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Currency.BackgroundWorkerService", "Currency\Currency.BackgroundWorkerService\Currency.BackgroundWorkerService.csproj", "{C1666521-36A7-4BFC-A80E-827B92BF3C58}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Migration", "Migration", "{B0CBE585-19AA-42EF-BAF2-819AB10755AC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Migration.WorkerService", "src\Migration\Migration.WorkerService\Migration.WorkerService.csproj", "{34ECA168-991F-4739-96F2-CFFA33FAC008}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -77,6 +81,10 @@ Global
 		{C1666521-36A7-4BFC-A80E-827B92BF3C58}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C1666521-36A7-4BFC-A80E-827B92BF3C58}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C1666521-36A7-4BFC-A80E-827B92BF3C58}.Release|Any CPU.Build.0 = Release|Any CPU
+		{34ECA168-991F-4739-96F2-CFFA33FAC008}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{34ECA168-991F-4739-96F2-CFFA33FAC008}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{34ECA168-991F-4739-96F2-CFFA33FAC008}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{34ECA168-991F-4739-96F2-CFFA33FAC008}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -95,6 +103,8 @@ Global
 		{8AB4C263-D212-4700-82BE-484772CA56CD} = {2055C2F2-5898-412A-BD87-713472A54C36}
 		{4F5BFA5C-A414-416C-AF5B-7621970F764E} = {2055C2F2-5898-412A-BD87-713472A54C36}
 		{C1666521-36A7-4BFC-A80E-827B92BF3C58} = {2055C2F2-5898-412A-BD87-713472A54C36}
+		{B0CBE585-19AA-42EF-BAF2-819AB10755AC} = {36D591C7-65C7-A0D1-1CBC-10CDE441BDC8}
+		{34ECA168-991F-4739-96F2-CFFA33FAC008} = {B0CBE585-19AA-42EF-BAF2-819AB10755AC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DB5B2737-75CC-4380-A1CA-7ADEEACEEE88}
