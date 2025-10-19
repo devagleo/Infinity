@@ -362,5 +362,5 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 /User/User.Grpc/Properties/launchSettings.json
-/Currency/Currency.Grpcs/Properties/launchSettings.json
 /Currency/Currency.BackgroundWorkerService/Properties/launchSettings.json
+/Currency/Currency.Grpcs/Properties/launchSettings.json
