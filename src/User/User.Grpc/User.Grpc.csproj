@@ -20,9 +20,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\src\Shared\Shared.csproj" />
-		<ProjectReference Include="..\..\src\User\User.Application\User.Application.csproj" />
-		<ProjectReference Include="..\..\src\User\User.Infrastructure\User.Infrastructure.csproj" />
+	  <ProjectReference Include="..\..\Shared\Shared.csproj" />
+	  <ProjectReference Include="..\User.Application\User.Application.csproj" />
+	  <ProjectReference Include="..\User.Infrastructure\User.Infrastructure.csproj" />
 	</ItemGroup>
 
 </Project>

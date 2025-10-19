@@ -17,19 +17,19 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "src\Shared\Shared
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "User.Application", "src\User\User.Application\User.Application.csproj", "{0C2EE5FC-0414-436B-B494-F233015833D8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "User.Grpc", "User\User.Grpc\User.Grpc.csproj", "{AE8F731D-DB75-4D8D-A875-388E30F9DC78}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "User.Grpc", "src\User\User.Grpc\User.Grpc.csproj", "{AE8F731D-DB75-4D8D-A875-388E30F9DC78}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Currency", "Currency", "{2055C2F2-5898-412A-BD87-713472A54C36}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Currency.Domain", "Currency\Currency.Domain\Currency.Domain.csproj", "{8E6F8828-5FA6-4010-B811-00E729C9AF4D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Currency.Domain", "src\Currency\Currency.Domain\Currency.Domain.csproj", "{8E6F8828-5FA6-4010-B811-00E729C9AF4D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Currency.Infrastructure", "Currency\Currency.Infrastructure\Currency.Infrastructure.csproj", "{831FB786-C2B2-45A7-AB09-6D70701801A6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Currency.Infrastructure", "src\Currency\Currency.Infrastructure\Currency.Infrastructure.csproj", "{831FB786-C2B2-45A7-AB09-6D70701801A6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Currency.Application", "Currency\Currency.Application\Currency.Application.csproj", "{8AB4C263-D212-4700-82BE-484772CA56CD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Currency.Application", "src\Currency\Currency.Application\Currency.Application.csproj", "{8AB4C263-D212-4700-82BE-484772CA56CD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Currency.Grpcs", "Currency\Currency.Grpcs\Currency.Grpcs.csproj", "{4F5BFA5C-A414-416C-AF5B-7621970F764E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Currency.Grpcs", "src\Currency\Currency.Grpcs\Currency.Grpcs.csproj", "{4F5BFA5C-A414-416C-AF5B-7621970F764E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Currency.BackgroundWorkerService", "Currency\Currency.BackgroundWorkerService\Currency.BackgroundWorkerService.csproj", "{C1666521-36A7-4BFC-A80E-827B92BF3C58}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Currency.BackgroundWorkerService", "src\Currency\Currency.BackgroundWorkerService\Currency.BackgroundWorkerService.csproj", "{C1666521-36A7-4BFC-A80E-827B92BF3C58}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
