@@ -1,0 +1,63 @@
+syntax = "proto3";
+
+option csharp_namespace = "Currency.Grpc";
+
+service CurrencyProtoService {
+  // Получить все валюты
+  rpc GetAllCurrencies (Empty) returns (GetAllCurrenciesResponse);
+
+  // Получить валюту по Id
+  rpc GetCurrencyById (GetCurrencyByIdRequest) returns (CurrencyGrpcDTO);
+ 
+  // Получить любимые валюты пользователя
+  rpc GetUserCurrencies (GetUserCurrenciesRequest) returns (GetUserCurrenciesResponse);
+
+  // Добавить валюту в любимые
+  rpc AddFavoriteCurrency (ModifyFavoriteCurrencyRequest) returns (ModifyFavoriteCurrencyResponse);
+
+  // Удалить валюту из любимых
+  rpc RemoveFavoriteCurrency (ModifyFavoriteCurrencyRequest) returns (ModifyFavoriteCurrencyResponse);
+}
+
+// ---------------------
+// Запросы и ответы
+// ---------------------
+
+message Empty {}
+// ---GetAllCurrencies---
+message GetAllCurrenciesResponse {
+  repeated CurrencyGrpcDTO currencies = 1;
+}
+
+// ---GetCurrencyById---
+message GetCurrencyByIdRequest {
+  string id = 1;
+}
+
+// ---GetUserCurrencies---
+message GetUserCurrenciesRequest {
+  string userId = 1;
+}
+
+// ---GetUserCurrencies---
+message GetUserCurrenciesResponse {
+  repeated CurrencyGrpcDTO currencies = 1;
+}
+
+// Для добавления/удаления в Favorites
+message ModifyFavoriteCurrencyRequest {
+  string userId = 1;
+  string currencyId = 2;
+}
+// Для добавления/удаления в Favorites
+message ModifyFavoriteCurrencyResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+// ---DTO---
+message CurrencyGrpcDTO {
+    string id = 1;
+    string name = 2;
+    double rate = 3;
+}
