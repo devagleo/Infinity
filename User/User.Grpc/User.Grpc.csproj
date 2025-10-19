@@ -1,17 +1,28 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
-  <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <UserSecretsId>c3724088-e5eb-4475-84cc-805883830fba</UserSecretsId>
-    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-    <DockerfileContext>..\..</DockerfileContext>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<UserSecretsId>c3724088-e5eb-4475-84cc-805883830fba</UserSecretsId>
+		<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+		<DockerfileContext>..\..</DockerfileContext>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Grpc.AspNetCore" Version="2.57.0" />
-    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.22.1" />
-  </ItemGroup>
+	<ItemGroup>
+		<Protobuf Include="Protos\user.proto" GrpcServices="Server" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Grpc.AspNetCore" Version="2.57.0" />
+		<PackageReference Include="Microsoft.IdentityModel.Tokens" Version="8.14.0" />
+		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.22.1" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\src\Shared\Shared.csproj" />
+		<ProjectReference Include="..\..\src\User\User.Application\User.Application.csproj" />
+		<ProjectReference Include="..\..\src\User\User.Infrastructure\User.Infrastructure.csproj" />
+	</ItemGroup>
 
 </Project>

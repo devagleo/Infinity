@@ -1,5 +1,7 @@
+using User.Application;
 using User.Grpc.Interceptors;
 using User.Grpc.Services;
+using User.Infrastructure;
 
 namespace User.Grpc
 {
@@ -25,7 +27,7 @@ namespace User.Grpc
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
-            app.MapGrpcService<GreeterService>();
+            app.MapGrpcService<UserGrpcService>();
             app.MapGet("/", () => "GRPC доступен");
 
             app.Run();
