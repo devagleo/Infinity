@@ -364,3 +364,4 @@ FodyWeavers.xsd
 /User/User.Grpc/Properties/launchSettings.json
 /Currency/Currency.BackgroundWorkerService/Properties/launchSettings.json
 /Currency/Currency.Grpcs/Properties/launchSettings.json
+/src/Migration/Migration.WorkerService/Properties/launchSettings.json
