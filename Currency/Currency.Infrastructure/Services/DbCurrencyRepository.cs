@@ -28,6 +28,7 @@ namespace Currency.Infrastructure.Services
         /// <returns></returns>
         public async Task<IEnumerable<CurrencyEntity>> GetAllAsync() 
         { 
+            //TODO: Вынести логику в Application уровень или переименовать метод
             return await _context.Currencies.Where(x => x.EffectiveDate == DateTime.Today).ToListAsync(); 
         }
 
@@ -42,9 +43,9 @@ namespace Currency.Infrastructure.Services
         }
 
         /// <summary>
-        /// Получить конкретную валюту по ValteID ЦБ
+        /// Получить валюту по Valute ID ЦБ из баз
         /// </summary>
-        /// <param name="valuteId">ID валюты из ЦБ</param>
+        /// <param name="valuteId"></param>
         /// <returns></returns>
         public async Task<CurrencyEntity?> GetByValuteIdAsync(string valuteId)
         {
