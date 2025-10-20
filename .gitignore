@@ -365,3 +365,4 @@ FodyWeavers.xsd
 /Currency/Currency.BackgroundWorkerService/Properties/launchSettings.json
 /Currency/Currency.Grpcs/Properties/launchSettings.json
 /src/Migration/Migration.WorkerService/Properties/launchSettings.json
+/src/Gateway/Gateway.Grpc/Properties/launchSettings.json

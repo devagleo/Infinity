@@ -1,0 +1,77 @@
+syntax = "proto3";
+
+option csharp_namespace = "Gateway.User.Grpc";
+
+service GatewayUserProtoService {
+  // --- Авторизация ---
+  rpc Register (RegisterRequest) returns (RegisterResponse);
+  rpc Login (LoginRequest) returns (LoginResponse);
+  rpc Logout (LogoutRequest) returns (LogoutResponse);
+
+  // --- Получение информации о пользователе ---
+  rpc GetUserById (GetUserByIdRequest) returns (UserGrpcDTO);
+  rpc GetUserIdByLogin (GetUserIdByLoginRequest) returns (UserGrpcDTO);
+}
+
+// --------------------
+// Модели и контракты
+// --------------------
+
+// --- Register ---
+message RegisterRequest {
+  string username = 1;
+  string password = 2;
+}
+
+message RegisterResponse {
+  string id = 1;
+  string username = 2;
+  string message = 3;
+}
+
+// --- Login ---
+message LoginRequest {
+  string username = 1;
+  string password = 2;
+}
+
+message LoginResponse {
+  string token = 1;
+  string message = 2;
+}
+
+// --- Logout ---
+message LogoutRequest {
+  string token = 1;
+}
+
+message LogoutResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+// --- GetUserById ---
+message GetUserByIdRequest {
+  string userId = 1;
+}
+
+message GetUserByIdResponse {
+  UserGrpcDTO user = 1;
+//  string username = 2;
+}
+
+// --- GetUserByLogin ---
+message GetUserIdByLoginRequest {
+  string login = 1;
+}
+
+message GetUserIdByLoginResponse {
+  UserGrpcDTO user = 1;
+}
+
+
+// --- DTO ---
+message UserGrpcDTO {
+    string id = 1;
+    string name = 2;
+}
