@@ -15,17 +15,28 @@ services:
       context: ./src/Migration/Migration.WorkerService
       dockerfile: Dockerfile
     depends_on:
-      - postgres
+      postgres:
+          condition: service_started
     environment:
       ConnectionStrings__UserDb: "Host=postgres;Database=UserDb;Username=postgres;Password=postgres"
       ConnectionStrings__CurrencyDb: "Host=postgres;Database=CurrencyDb;Username=postgres;Password=postgres"
+    #Дожидаемся окончания миграций
+    healthcheck:
+      test: ["CMD", "dotnet", "Migration.WorkerService.dll", "--check-db"] 
+      interval: 5s
+      retries: 5
+      timeout: 5s
+      start_period: 0s
 
   user.grpc:
     build:
       context: ./src/User/User.Grpc
       dockerfile: Dockerfile
     depends_on:
-      - postgres
+      postgres:
+          condition: service_started
+      migration.workerservice:
+          condition: service_healthy
     ports:
       - 8080:8080
     environment:
@@ -40,7 +51,10 @@ services:
       context: ./src/Currency/Currency.Grpc
       dockerfile: Dockerfile
     depends_on:
-      - postgres
+      postgres:
+          condition: service_started
+      migration.workerservice:
+          condition: service_healthy
     ports:
       - 9080:8080
     environment:
@@ -55,7 +69,11 @@ services:
       context: ./src/Currency/Currency.BackgroundWorkerService
       dockerfile: Dockerfile
     depends_on:
-      - postgres
+      postgres:
+          condition: service_started
+      #Дожидаемся окончания миграции, так как синхронизация курсов стартует сразу со старом контейнера
+      migration.workerservice:
+          condition: service_healthy
 
     environment:
       ConnectionStrings__CurrencyDb: "Host=postgres;Database=CurrencyDb;Username=postgres;Password=postgres"
@@ -67,8 +85,10 @@ services:
       context: ./src/Gateway/Gateway.Grpc
       dockerfile: Dockerfile
     depends_on:
-      - currency.grpc
-      - user.grpc
+      currency.grpc:
+          condition: service_started
+      user.grpc:
+          condition: service_started
     ports:
       - 20080:8080
 
@@ -85,8 +105,10 @@ services:
       context: ./src/Gateway/Gateway.Api
       dockerfile: Dockerfile
     depends_on:
-      - currency.grpc
-      - user.grpc
+      currency.grpc:
+          condition: service_started
+      user.grpc:
+          condition: service_started
     ports:
       - 30080:8080
 
