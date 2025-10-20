@@ -36,10 +36,14 @@ namespace Migration.WorkerService
                 _logger.LogInformation("CurrencyDb миграция применена.");
 
                 _logger.LogInformation("Все миграции применены");
+
+                //Сообщаем Docker Compose о завершении миграции для вызова кондицкии service_completed_successfully
+                Environment.Exit(0);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Ошибка миграции!");
+                Environment.Exit(1);
             }
         }
     }
