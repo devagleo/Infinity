@@ -1,5 +1,6 @@
 using Currency.Infrastructure.DbContexts;
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
 using User.Infrastructure.DbContexts;
 
 namespace Migration.WorkerService
@@ -7,43 +8,86 @@ namespace Migration.WorkerService
     public class MigrationWorker : BackgroundService
     {
         private readonly ILogger<MigrationWorker> _logger;
-        private readonly IServiceScopeFactory _scopeFactory;
+        private readonly IServiceProvider _serviceProvider;
 
-        public MigrationWorker(ILogger<MigrationWorker> logger, IServiceScopeFactory serviceScopeFactory)
+        public MigrationWorker(ILogger<MigrationWorker> logger, IServiceProvider serviceProvider)
         {
             _logger = logger;
-            _scopeFactory = serviceScopeFactory;
+            _serviceProvider = serviceProvider;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            _logger.LogInformation("Начат процесс миграции БД");
-            try
+            _logger.LogDebug("Migration service started");
+
+            await MigrateDatabaseAsync<UserDbContext>("UserDb");
+            await MigrateDatabaseAsync<CurrencyDbContext>("CurrencyDb");
+
+            _logger.LogDebug("Migration service finished");
+            Environment.Exit(0);
+            
+        }
+        private async Task MigrateDatabaseAsync<TContext>(string databaseName) where TContext : DbContext
+        {
+            const int maxRetries = 10;
+            const int delayMs = 2000;
+
+            int attempt = 0;
+            while (attempt < maxRetries)
             {
-                // Создаем фабрику, так как контексты регистрируются как Scope, а Worker в HosteService как Singleton
-                using var scope = _scopeFactory.CreateScope();
-                // Контекст валют
-                var _currencyDbContext = scope.ServiceProvider.GetRequiredService<CurrencyDbContext>();
-                // Контекст пользователей
-                var _userDbContext = scope.ServiceProvider.GetRequiredService<UserDbContext>();
+                attempt++;
+                try
+                {
+                    using var scope = _serviceProvider.CreateScope();
+                    var context = scope.ServiceProvider.GetRequiredService<TContext>();
+                    var connString = context.Database.GetConnectionString();
 
-                _logger.LogInformation("Применаю миграцию UserDb...");
-                await _userDbContext.Database.MigrateAsync(stoppingToken);
-                _logger.LogInformation("UserDb миграция применена.");
+                    // Создание базы, если её нет
+                    await EnsureDatabaseExistsAsync(connString, databaseName);
 
-                _logger.LogInformation("Применяю миграцю CurrencyDb...");
-                await _currencyDbContext.Database.MigrateAsync(stoppingToken);
-                _logger.LogInformation("CurrencyDb миграция применена.");
-
-                _logger.LogInformation("Все миграции применены");
-
-                //Сообщаем Docker Compose о завершении миграции для вызова кондицкии service_completed_successfully
-                Environment.Exit(0);
+                    _logger.LogDebug($"Applying migrations for {databaseName}...");
+                    await context.Database.MigrateAsync();
+                    _logger.LogDebug($"Migrations applied successfully for {databaseName}");
+                    return; // успех, выходим из цикла
+                }
+                catch (Npgsql.NpgsqlException ex)
+                {
+                    _logger.LogWarning(ex, $"Attempt {attempt}/{maxRetries} failed to connect to {databaseName}. Retrying in {delayMs}ms...");
+                    await Task.Delay(delayMs);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, $"Migration failed for {databaseName} on attempt {attempt}/{maxRetries}");
+                    throw;
+                }
             }
-            catch (Exception ex)
+        }
+
+        private async Task EnsureDatabaseExistsAsync(string originalConnString, string databaseName)
+        {
+            // Меняем Database= на postgres для подключения к существующей системе
+            var builder = new NpgsqlConnectionStringBuilder(originalConnString)
             {
-                _logger.LogError(ex, "Ошибка миграции!");
-                Environment.Exit(1);
+                Database = "postgres"
+            };
+
+            using var conn = new NpgsqlConnection(builder.ConnectionString);
+            await conn.OpenAsync();
+
+            using var cmd = conn.CreateCommand();
+            cmd.CommandText = $"SELECT 1 FROM pg_database WHERE datname = '{databaseName}'";
+            var exists = await cmd.ExecuteScalarAsync();
+
+            if (exists == null)
+            {
+                _logger.LogDebug($"Database '{databaseName}' does not exist — creating...");
+                cmd.CommandText = $"CREATE DATABASE \"{databaseName}\"";
+                await cmd.ExecuteNonQueryAsync();
+                _logger.LogDebug($"Database '{databaseName}' created");
+            }
+            else
+            {
+                _logger.LogDebug($"Database '{databaseName}' already exists");
             }
         }
     }

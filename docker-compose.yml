@@ -4,6 +4,7 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: UserDb
     ports:
       - "5432:5432"
     volumes:
@@ -14,8 +15,7 @@ services:
       context: .
       dockerfile: /src/Migration/Migration.WorkerService/Dockerfile
     depends_on:
-      postgres:
-          condition: service_started
+      - postgres
     environment:
       ConnectionStrings__UserDb: "Host=postgres;Database=UserDb;Username=postgres;Password=postgres"
       ConnectionStrings__CurrencyDb: "Host=postgres;Database=CurrencyDb;Username=postgres;Password=postgres"

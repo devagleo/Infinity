@@ -24,4 +24,8 @@
     <ProjectReference Include="..\..\Currency\Currency.Infrastructure\Currency.Infrastructure.csproj" />
     <ProjectReference Include="..\..\User\User.Infrastructure\User.Infrastructure.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Services\" />
+  </ItemGroup>
 </Project>
