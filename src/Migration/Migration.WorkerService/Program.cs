@@ -1,6 +1,7 @@
 using Currency.Infrastructure.DbContexts;
 using Microsoft.EntityFrameworkCore;
 using User.Infrastructure.DbContexts;
+using Migration.WorkerService;
 
 namespace Migration.WorkerService
 {
@@ -9,7 +10,7 @@ namespace Migration.WorkerService
         public static void Main(string[] args)
         {
             var builder = Host.CreateApplicationBuilder(args);
-            builder.Services.AddHostedService<Worker>();
+            builder.Services.AddHostedService<MigrationWorker>();
             
             // Подключаем основные контекст БД
             builder.Services.AddDbContext<UserDbContext>(options =>
