@@ -368,3 +368,4 @@ FodyWeavers.xsd
 /src/Gateway/Gateway.Grpc/Properties/launchSettings.json
 /src/Gateway/Gateway.Api/Properties/launchSettings.json
 /src/Migration/Migration.WorkerService/Properties/launchSettings.json
+/launchSettings.json

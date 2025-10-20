@@ -1,0 +1,104 @@
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: myappdb
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  migration.workerservice:
+    build:
+      context: ./src/Migration/Migration.WorkerService
+      dockerfile: Dockerfile
+    depends_on:
+      - postgres
+    environment:
+      ConnectionStrings__UserDb: "Host=postgres;Database=UserDb;Username=postgres;Password=postgres"
+      ConnectionStrings__CurrencyDb: "Host=postgres;Database=CurrencyDb;Username=postgres;Password=postgres"
+
+  user.grpc:
+    build:
+      context: ./src/User/User.Grpc
+      dockerfile: Dockerfile
+    depends_on:
+      - postgres
+    ports:
+      - 8080:8080
+    environment:
+      ConnectionStrings__UserDb: "Host=postgres;Database=UserDb;Username=postgres;Password=postgres"
+      Jwt__Secret: "super_secret_key_1234567890!@#$%^&*()"
+      Jwt__Issuer: "UserService"
+      Jwt__Audience: "InfinityProject"
+      ASPNETCORE_URLS: "http://+:8080"
+  
+  currency.grpc:
+    build:
+      context: ./src/Currency/Currency.Grpc
+      dockerfile: Dockerfile
+    depends_on:
+      - postgres
+    ports:
+      - 9080:8080
+    environment:
+      ConnectionStrings__CurrencyDb: "Host=postgres;Database=CurrencyDb;Username=postgres;Password=postgres"
+      Jwt__Secret: "super_secret_key_1234567890!@#$%^&*()"
+      Jwt__Issuer: "UserService"
+      Jwt__Audience: "InfinityProject"
+      ASPNETCORE_URLS: "http://+:8080"
+
+  currency.updater:
+    build:
+      context: ./src/Currency/Currency.BackgroundWorkerService
+      dockerfile: Dockerfile
+    depends_on:
+      - postgres
+
+    environment:
+      ConnectionStrings__CurrencyDb: "Host=postgres;Database=CurrencyDb;Username=postgres;Password=postgres"
+      Url__CBCurrencies: "http://www.cbr.ru/scripts/XML_daily.asp"
+      BackgroundUpdater_Delay_Seconds: "600"
+
+  gateway.grpc:
+    build:
+      context: ./src/Gateway/Gateway.Grpc
+      dockerfile: Dockerfile
+    depends_on:
+      - currency.grpc
+      - user.grpc
+    ports:
+      - 20080:8080
+
+    environment:
+      UrlGrpcMicroservice__User: "http://user.grpc:8080"
+      UrlGrpcMicroservice__Currency: "http://currency.grpc:8080"
+      Jwt__Secret: "super_secret_key_1234567890!@#$%^&*()"
+      Jwt__Issuer: "UserService"
+      Jwt__Audience: "InfinityProject"
+      ASPNETCORE_URLS: "http://+:8080"
+
+  gateway.api:
+    build:
+      context: ./src/Gateway/Gateway.Api
+      dockerfile: Dockerfile
+    depends_on:
+      - currency.grpc
+      - user.grpc
+    ports:
+      - 30080:8080
+
+    environment:
+      UrlGrpcMicroservice__User: "http://user.grpc:8080"
+      UrlGrpcMicroservice__Currency: "http://currency.grpc:8080"
+      Jwt__Secret: "super_secret_key_1234567890!@#$%^&*()"
+      Jwt__Issuer: "UserService"
+      Jwt__Audience: "InfinityProject"
+      ASPNETCORE_URLS: "http://+:8080"
+      ASPNETCORE_ENVIRONMENT: "Development"
+
+
+volumes:
+  pgdata:

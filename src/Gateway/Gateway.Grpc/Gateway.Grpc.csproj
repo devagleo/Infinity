@@ -7,6 +7,7 @@
 		<UserSecretsId>5c292db8-ba6c-4031-a592-f47e2627d481</UserSecretsId>
 		<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
 		<DockerfileContext>..\..\..</DockerfileContext>
+		<DockerComposeProjectPath>..\..\..\docker-compose.dcproj</DockerComposeProjectPath>
 	</PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="Google.Protobuf" Version="3.33.0" />

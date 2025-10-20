@@ -27,9 +27,10 @@ namespace Currency.Infrastructure.Services
         /// </summary>
         /// <returns></returns>
         public async Task<IEnumerable<CurrencyEntity>> GetAllAsync() 
-        { 
+        {
             //TODO: Вынести логику в Application уровень или переименовать метод
-            return await _context.Currencies.Where(x => x.EffectiveDate == DateTime.Today).ToListAsync(); 
+            var lastdate = _context.Currencies.OrderByDescending(x => x.EffectiveDate).Select(x => x.EffectiveDate).FirstOrDefault();
+            return await _context.Currencies.Where(x => x.EffectiveDate == lastdate).ToListAsync(); 
         }
 
         /// <summary>
