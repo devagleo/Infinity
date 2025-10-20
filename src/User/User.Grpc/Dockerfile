@@ -1,14 +1,24 @@
 # См. статью по ссылке https://aka.ms/customizecontainer, чтобы узнать как настроить контейнер отладки и как Visual Studio использует этот Dockerfile для создания образов для ускорения отладки.
 
 # Этот этап используется при запуске из VS в быстром режиме (по умолчанию для конфигурации отладки)
-FROM mcr.microsoft.com/dotnet/aspnet:8.0-alpine AS base
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 WORKDIR /app
 
+
+
 # Этот этап используется для сборки проекта службы
-FROM mcr.microsoft.com/dotnet/sdk:8.0-alpine AS build
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["User/User.Grpc/User.Grpc.csproj", "User/User.Grpc/"]
+COPY ["src/User/User.Grpc/", "User/User.Grpc/"]
+COPY ["src/Shared/", "Shared/"]
+COPY ["src/User/User.Application/", "User/User.Application/"]
+COPY ["src/User/User.Domain/", "User/User.Domain/"]
+COPY ["src/User/User.Infrastructure/", "User/User.Infrastructure/"]
+
+# Копируем сами proto файлы в то же место, где их ищет csproj
+COPY ["src/User/User.Grpc/Protos/", "/src/User/User.Grpc/Protos/"]
+
 RUN dotnet restore "./User/User.Grpc/User.Grpc.csproj"
 COPY . .
 WORKDIR "/src/User/User.Grpc"

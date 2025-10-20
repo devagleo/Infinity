@@ -4,7 +4,6 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: myappdb
     ports:
       - "5432:5432"
     volumes:
@@ -12,31 +11,24 @@ services:
 
   migration.workerservice:
     build:
-      context: ./src/Migration/Migration.WorkerService
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: /src/Migration/Migration.WorkerService/Dockerfile
     depends_on:
       postgres:
           condition: service_started
     environment:
       ConnectionStrings__UserDb: "Host=postgres;Database=UserDb;Username=postgres;Password=postgres"
       ConnectionStrings__CurrencyDb: "Host=postgres;Database=CurrencyDb;Username=postgres;Password=postgres"
-    #Дожидаемся окончания миграций
-    healthcheck:
-      test: ["CMD", "dotnet", "Migration.WorkerService.dll", "--check-db"] 
-      interval: 5s
-      retries: 5
-      timeout: 5s
-      start_period: 0s
 
   user.grpc:
     build:
-      context: ./src/User/User.Grpc
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: src/User/User.Grpc/Dockerfile
     depends_on:
       postgres:
           condition: service_started
       migration.workerservice:
-          condition: service_healthy
+          condition: service_completed_successfully
     ports:
       - 8080:8080
     environment:
@@ -47,14 +39,15 @@ services:
       ASPNETCORE_URLS: "http://+:8080"
   
   currency.grpc:
+    image: ${DOCKER_REGISTRY-}currencygrpc
     build:
-      context: ./src/Currency/Currency.Grpc
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: src/Currency/Currency.Grpc/Dockerfile
     depends_on:
       postgres:
           condition: service_started
       migration.workerservice:
-          condition: service_healthy
+          condition: service_completed_successfully
     ports:
       - 9080:8080
     environment:
@@ -64,16 +57,17 @@ services:
       Jwt__Audience: "InfinityProject"
       ASPNETCORE_URLS: "http://+:8080"
 
-  currency.updater:
+  currency.backgroundworkerservice:
+    image: ${DOCKER_REGISTRY-}currencybackgroundworkerservice
     build:
-      context: ./src/Currency/Currency.BackgroundWorkerService
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: src/Currency/Currency.BackgroundWorkerService/Dockerfile
     depends_on:
       postgres:
           condition: service_started
-      #Дожидаемся окончания миграции, так как синхронизация курсов стартует сразу со старом контейнера
+      #Wait for migration complete
       migration.workerservice:
-          condition: service_healthy
+          condition: service_completed_successfully
 
     environment:
       ConnectionStrings__CurrencyDb: "Host=postgres;Database=CurrencyDb;Username=postgres;Password=postgres"
@@ -82,8 +76,8 @@ services:
 
   gateway.grpc:
     build:
-      context: ./src/Gateway/Gateway.Grpc
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: src/Gateway/Gateway.Grpc/Dockerfile
     depends_on:
       currency.grpc:
           condition: service_started
@@ -91,7 +85,6 @@ services:
           condition: service_started
     ports:
       - 20080:8080
-
     environment:
       UrlGrpcMicroservice__User: "http://user.grpc:8080"
       UrlGrpcMicroservice__Currency: "http://currency.grpc:8080"
@@ -102,8 +95,8 @@ services:
 
   gateway.api:
     build:
-      context: ./src/Gateway/Gateway.Api
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: src/Gateway/Gateway.Api/Dockerfile
     depends_on:
       currency.grpc:
           condition: service_started
@@ -111,7 +104,6 @@ services:
           condition: service_started
     ports:
       - 30080:8080
-
     environment:
       UrlGrpcMicroservice__User: "http://user.grpc:8080"
       UrlGrpcMicroservice__Currency: "http://currency.grpc:8080"
@@ -120,7 +112,6 @@ services:
       Jwt__Audience: "InfinityProject"
       ASPNETCORE_URLS: "http://+:8080"
       ASPNETCORE_ENVIRONMENT: "Development"
-
 
 volumes:
   pgdata:

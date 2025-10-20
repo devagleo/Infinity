@@ -1,18 +1,24 @@
 # См. статью по ссылке https://aka.ms/customizecontainer, чтобы узнать как настроить контейнер отладки и как Visual Studio использует этот Dockerfile для создания образов для ускорения отладки.
 
 # Этот этап используется при запуске из VS в быстром режиме (по умолчанию для конфигурации отладки)
-FROM mcr.microsoft.com/dotnet/aspnet:8.0-alpine AS base
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
+
 WORKDIR /app
 
 
 # Этот этап используется для сборки проекта службы
-FROM mcr.microsoft.com/dotnet/sdk:8.0-alpine AS build
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["src/Gateway/Gateway.Grpc/Gateway.Grpc.csproj", "src/Gateway/Gateway.Grpc/"]
-COPY ["src/Shared/Shared.csproj", "src/Shared/"]
-COPY ["src/Gateway/Gateway.Application/Gateway.Application.csproj", "src/Gateway/Gateway.Application/"]
-COPY ["src/Gateway/Gateway.Infrastructure/Gateway.Infrastructure.csproj", "src/Gateway/Gateway.Infrastructure/"]
+COPY ["src/Gateway/Gateway.Grpc/", "src/Gateway/Gateway.Grpc/"]
+COPY ["src/Shared/", "src/Shared/"]
+COPY ["src/Gateway/Gateway.Application/", "src/Gateway/Gateway.Application/"]
+COPY ["src/Gateway/Gateway.Infrastructure/", "src/Gateway/Gateway.Infrastructure/"]
+
+# Копируем сами proto файлы в то же место, где их ищет csproj
+COPY ["src/User/User.Grpc/Protos/", "/src/User/User.Grpc/Protos/"]
+COPY ["src/Currency/Currency.Grpc/Protos/", "/src/Currency/Currency.Grpc/Protos/"]
+
 RUN dotnet restore "./src/Gateway/Gateway.Grpc/Gateway.Grpc.csproj"
 COPY . .
 WORKDIR "/src/src/Gateway/Gateway.Grpc"
