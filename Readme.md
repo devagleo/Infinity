@@ -50,8 +50,8 @@ Infinity Project — это набор микросервисов, реализ�
 1. Клонируйте репозиторий:
 
 ```bash
-git clone <repo_url>
-cd <repo_folder>
+git clone https://github.com/devagleo/Infinity.git
+cd infinity-master
 ```
 
 2. Убедитесь, что Docker и Docker Compose установлены.
